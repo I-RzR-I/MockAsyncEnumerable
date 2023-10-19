@@ -34,15 +34,15 @@ namespace MockAsyncEnumerable.Helpers
         ///     Current query provider
         /// </summary>
         /// <remarks></remarks>
-        private readonly IQueryProvider _inner;
+        private readonly IQueryProvider _queryProvider;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="AsyncQueryProvider{TEntity}" />
         ///     class.
         /// </summary>
-        /// <param name="inner">Inner query provider</param>
+        /// <param name="queryProvider">Inner query provider</param>
         /// <remarks></remarks>
-        internal AsyncQueryProvider(IQueryProvider inner) => _inner = inner;
+        internal AsyncQueryProvider(IQueryProvider queryProvider) => _queryProvider = queryProvider;
 
         /// <inheritdoc />
         public IQueryable CreateQuery(Expression expression)
@@ -54,25 +54,25 @@ namespace MockAsyncEnumerable.Helpers
 
         /// <inheritdoc />
         public object Execute(Expression expression)
-            => _inner.Execute(expression);
+            => _queryProvider.Execute(expression);
 
         /// <inheritdoc />
         public TResult Execute<TResult>(Expression expression)
-            => _inner.Execute<TResult>(expression);
+            => _queryProvider.Execute<TResult>(expression);
 
         /// <inheritdoc />
         TResult IAsyncQueryProvider.ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken)
         {
-            var expectedResultType = typeof(TResult).GetGenericArguments() [0];
+            var expectedResultType = typeof(TResult).GetGenericArguments()[0];
             var executionResult = typeof(IQueryProvider)
                 .GetMethods()
                 .First(method => method.Name == nameof(IQueryProvider.Execute) && method.IsGenericMethod)
                 .MakeGenericMethod(expectedResultType)
-                .Invoke(this, new object [] { expression });
+                .Invoke(this, new object[] { expression });
 
             return (TResult)typeof(Task).GetMethod(nameof(Task.FromResult))!
                 .MakeGenericMethod(expectedResultType)
-                .Invoke(null, new [] { executionResult });
+                .Invoke(null, new[] { executionResult });
         }
 
         /// <summary>

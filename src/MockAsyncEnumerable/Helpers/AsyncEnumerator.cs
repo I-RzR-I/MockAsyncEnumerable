@@ -28,23 +28,39 @@ namespace MockAsyncEnumerable.Helpers
     /// <inheritdoc cref="IAsyncEnumerator{T}" />
     internal class AsyncEnumerator<T> : IAsyncEnumerator<T>, IDisposable
     {
-        private readonly IEnumerator<T> _inner;
+        /// <summary>
+        ///     Inner enumerator
+        /// </summary>
+        private readonly IEnumerator<T> _innerEnumerator;
+        
+        /// <summary>
+        ///     Disposed
+        /// </summary>
         private bool _disposed;
+
+        /// <inheritdoc />
+        public T Current => _innerEnumerator.Current;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="AsyncEnumerator{T}" /> class.
         /// </summary>
-        /// <param name="inner">Inner enumerator</param>
+        /// <param name="innerEnumerator">Inner enumerator</param>
         /// <remarks></remarks>
-        public AsyncEnumerator(IEnumerator<T> inner)
-            => _inner = inner;
+        public AsyncEnumerator(IEnumerator<T> innerEnumerator)
+            => _innerEnumerator = innerEnumerator;
 
         /// <inheritdoc />
         public async ValueTask<bool> MoveNextAsync()
-            => await Task.FromResult(_inner.MoveNext());
-
-        /// <inheritdoc />
-        public T Current => _inner.Current;
+            => await Task.FromResult(_innerEnumerator.MoveNext());
+        
+        /// <summary>
+        ///     Move next value
+        /// </summary>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public Task<bool> MoveNext(CancellationToken cancellationToken = new CancellationToken())
+            => Task.FromResult(_innerEnumerator.MoveNext());
 
         /// <inheritdoc />
         public async ValueTask DisposeAsync()
@@ -79,16 +95,7 @@ namespace MockAsyncEnumerable.Helpers
         private void Dispose(bool disposing)
         {
             if (disposing.Equals(true))
-                _inner.Dispose();
+                _innerEnumerator.Dispose();
         }
-
-        /// <summary>
-        ///     Move next value
-        /// </summary>
-        /// <param name="cancellationToken">Cancellation token</param>
-        /// <returns></returns>
-        /// <remarks></remarks>
-        public Task<bool> MoveNext(CancellationToken cancellationToken)
-            => Task.FromResult(_inner.MoveNext());
     }
 }
