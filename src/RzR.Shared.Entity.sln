@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.32510.428
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34003.232
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "shared", "shared", "{BCB2B36F-30D2-4B00-802B-52BDB4CB9E0F}"
 	ProjectSection(SolutionItems) = preProject
@@ -11,6 +11,12 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{E737BE4D-6DFF-4A67-A3D9-2AC58BFBBC07}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MockAsyncEnumerable", "MockAsyncEnumerable\MockAsyncEnumerable.csproj", "{37BA6C5B-9259-49F6-ABC0-B6EB17D1015B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockTestNet5", "tests\MockTestNet5\MockTestNet5.csproj", "{7B5B1A77-1FBC-4BAD-8FDD-68CC2FDC2F73}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MockTestNet6", "tests\MockTestNet6\MockTestNet6.csproj", "{1A1AA14F-F194-4908-9AF8-E91F1B85D10A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MockTestNet7", "tests\MockTestNet7\MockTestNet7.csproj", "{B5EF4E1F-D2B3-4213-BB4C-121B8BF65006}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -22,18 +28,35 @@ Global
 		{37BA6C5B-9259-49F6-ABC0-B6EB17D1015B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{37BA6C5B-9259-49F6-ABC0-B6EB17D1015B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{37BA6C5B-9259-49F6-ABC0-B6EB17D1015B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B5B1A77-1FBC-4BAD-8FDD-68CC2FDC2F73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B5B1A77-1FBC-4BAD-8FDD-68CC2FDC2F73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B5B1A77-1FBC-4BAD-8FDD-68CC2FDC2F73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B5B1A77-1FBC-4BAD-8FDD-68CC2FDC2F73}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A1AA14F-F194-4908-9AF8-E91F1B85D10A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A1AA14F-F194-4908-9AF8-E91F1B85D10A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A1AA14F-F194-4908-9AF8-E91F1B85D10A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A1AA14F-F194-4908-9AF8-E91F1B85D10A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5EF4E1F-D2B3-4213-BB4C-121B8BF65006}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5EF4E1F-D2B3-4213-BB4C-121B8BF65006}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5EF4E1F-D2B3-4213-BB4C-121B8BF65006}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5EF4E1F-D2B3-4213-BB4C-121B8BF65006}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7B5B1A77-1FBC-4BAD-8FDD-68CC2FDC2F73} = {E737BE4D-6DFF-4A67-A3D9-2AC58BFBBC07}
+		{1A1AA14F-F194-4908-9AF8-E91F1B85D10A} = {E737BE4D-6DFF-4A67-A3D9-2AC58BFBBC07}
+		{B5EF4E1F-D2B3-4213-BB4C-121B8BF65006} = {E737BE4D-6DFF-4A67-A3D9-2AC58BFBBC07}
+	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {4B5BD8B8-58AD-47B4-B85A-E7242D47B9FE}
-		BuildVersion_BuildVersioningStyle = None.None.Increment.TimeStamp
-		BuildVersion_UpdateAssemblyVersion = True
-		BuildVersion_UpdateFileVersion = True
-		BuildVersion_StartDate = 2023/4/30
-		BuildVersion_AssemblyInfoFilename = shared\GeneralAssemblyInfo.cs
-		BuildVersion_ConfigurationName = Release
 		BuildVersion_UseUniversalClock = True
+		BuildVersion_ConfigurationName = Release
+		BuildVersion_AssemblyInfoFilename = shared\GeneralAssemblyInfo.cs
+		BuildVersion_StartDate = 2023/4/30
+		BuildVersion_UpdateFileVersion = True
+		BuildVersion_UpdateAssemblyVersion = True
+		BuildVersion_BuildVersioningStyle = None.None.Increment.TimeStamp
+		SolutionGuid = {4B5BD8B8-58AD-47B4-B85A-E7242D47B9FE}
 	EndGlobalSection
 EndGlobal
