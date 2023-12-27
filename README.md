@@ -1,4 +1,4 @@
-> **Note** This repository is developed for .netstandard2.1
+> **Note** This repository is developed for .netstandard2.0+
 
 [![NuGet Version](https://img.shields.io/nuget/v/MockAsyncEnumerable.svg?style=flat&logo=nuget)](https://www.nuget.org/packages/MockAsyncEnumerable/)
 [![Nuget Downloads](https://img.shields.io/nuget/dt/MockAsyncEnumerable.svg?style=flat&logo=nuget)](https://www.nuget.org/packages/MockAsyncEnumerable)

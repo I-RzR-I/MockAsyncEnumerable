@@ -21,8 +21,14 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore.Query;
 
+#if NETSTANDARD2_0
+using Microsoft.EntityFrameworkCore.Query.Internal;
+#endif
+
+#if NETSTANDARD2_1 || NET || NET5_0 || NET6_0 || NET7_0 || NET8_0
+using Microsoft.EntityFrameworkCore.Query;
+#endif
 #endregion
 
 namespace MockAsyncEnumerable.Helpers
