@@ -16,6 +16,7 @@
 
 #region U S A G E S
 
+using MockAsyncEnumerable.Helpers.Internal;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -30,24 +31,27 @@ namespace MockAsyncEnumerable.Helpers
     {
         /// <inheritdoc />
         public AsyncEnumerable(IEnumerable<T> enumerable) : base(enumerable)
-        {
-        }
+            => GuardEnsure.NotNullable(enumerable);
 
         /// <inheritdoc />
-        public AsyncEnumerable(Expression expression) : base(expression)
-        {
-        }
+        public AsyncEnumerable(Expression expression) : base(expression) 
+            => GuardEnsure.NotNull(expression);
 
         /// <inheritdoc />
         public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = new CancellationToken())
-            => new AsyncEnumerator<T>(this.AsEnumerable().GetEnumerator());
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            return new AsyncEnumerator<T>(this.AsEnumerable().GetEnumerator());
+        }
 
         /// <summary>
         ///     Gets current provider.
         /// </summary>
         /// <value></value>
         /// <remarks></remarks>
-        IQueryProvider IQueryable.Provider => new AsyncQueryProvider<T>(this);
+        IQueryProvider IQueryable.Provider 
+            => new AsyncQueryProvider<T>(this);
 
         /// <summary>
         ///     Get enumerator
