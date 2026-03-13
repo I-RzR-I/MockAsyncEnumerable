@@ -16,23 +16,35 @@
 
 #region U S A G E S
 
+using MockAsyncEnumerable.Helpers.Internal;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Reflection;
+
 
 #if NETSTANDARD2_0
 using Microsoft.EntityFrameworkCore.Query.Internal;
 #endif
 
-#if NETSTANDARD2_1 || NET || NET5_0 || NET6_0 || NET7_0 || NET8_0
+#if NETSTANDARD2_1 || NET || NET5_0 || NET6_0 || NET7_0 || NET8_0|| NET9_0
 using Microsoft.EntityFrameworkCore.Query;
 #endif
+
 #endregion
 
 namespace MockAsyncEnumerable.Helpers
 {
+    /// <summary>
+    ///     Async enumerator implementation that wraps a synchronous enumerator.
+    /// </summary>
+    /// <typeparam name="TEntity">The type of elements to enumerate</typeparam>
+    /// <remarks>
+    ///     This implementation provides async enumeration capabilities over synchronous collections.
+    ///     While it implements IAsyncEnumerator, the underlying operations are synchronous.
+    /// </remarks>
     /// <inheritdoc cref="IAsyncQueryProvider" />
     internal class AsyncQueryProvider<TEntity> : IAsyncQueryProvider
     {
@@ -48,37 +60,67 @@ namespace MockAsyncEnumerable.Helpers
         /// </summary>
         /// <param name="queryProvider">Inner query provider</param>
         /// <remarks></remarks>
-        internal AsyncQueryProvider(IQueryProvider queryProvider) => _queryProvider = queryProvider;
+        internal AsyncQueryProvider(IQueryProvider queryProvider)
+        {
+            GuardEnsure.NotNull(queryProvider);
+
+            _queryProvider = queryProvider;
+        }
 
         /// <inheritdoc />
         public IQueryable CreateQuery(Expression expression)
-            => new AsyncEnumerable<TEntity>(expression);
+        {
+            GuardEnsure.NotNull(expression);
+
+            return new AsyncEnumerable<TEntity>(expression);
+        }
 
         /// <inheritdoc />
         public IQueryable<TElement> CreateQuery<TElement>(Expression expression)
-            => new AsyncEnumerable<TElement>(expression);
+        {
+            GuardEnsure.NotNull(expression);
+
+            return new AsyncEnumerable<TElement>(expression);
+        }
 
         /// <inheritdoc />
         public object Execute(Expression expression)
-            => _queryProvider.Execute(expression);
+        {
+            GuardEnsure.NotNull(expression);
+
+            return _queryProvider.Execute(expression);
+        }
 
         /// <inheritdoc />
         public TResult Execute<TResult>(Expression expression)
-            => _queryProvider.Execute<TResult>(expression);
+        {
+            GuardEnsure.NotNull(expression);
+
+            return _queryProvider.Execute<TResult>(expression);
+        }
 
         /// <inheritdoc />
         TResult IAsyncQueryProvider.ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken)
         {
-            var expectedResultType = typeof(TResult).GetGenericArguments()[0];
-            var executionResult = typeof(IQueryProvider)
-                .GetMethods()
-                .First(method => method.Name == nameof(IQueryProvider.Execute) && method.IsGenericMethod)
-                .MakeGenericMethod(expectedResultType)
-                .Invoke(this, new object[] { expression });
-
-            return (TResult)typeof(Task).GetMethod(nameof(Task.FromResult))!
-                .MakeGenericMethod(expectedResultType)
-                .Invoke(null, new[] { executionResult });
+            GuardEnsure.NotNull(expression);
+            cancellationToken.ThrowIfCancellationRequested();
+            try
+            {
+                var expectedResultType = typeof(TResult).GetGenericArguments()[0];
+                var executionResult = typeof(IQueryProvider)
+                    .GetMethods()
+                    .First(method => method.Name == nameof(IQueryProvider.Execute) && method.IsGenericMethod)
+                    .MakeGenericMethod(expectedResultType)
+                    .Invoke(this, new object[] { expression });
+                
+                return (TResult)typeof(Task).GetMethod(nameof(Task.FromResult))!
+                    .MakeGenericMethod(expectedResultType)
+                    .Invoke(null, new[] { executionResult });
+            }
+            catch (TargetInvocationException ex) when (ex.InnerException != null)
+            {
+                throw ex.InnerException;
+            }
         }
 
         /// <summary>
@@ -89,7 +131,11 @@ namespace MockAsyncEnumerable.Helpers
         /// <typeparam name="TResult">Type of entity</typeparam>
         /// <remarks></remarks>
         public IAsyncEnumerable<TResult> ExecuteAsync<TResult>(Expression expression)
-            => new AsyncEnumerable<TResult>(expression);
+        {
+            GuardEnsure.NotNull(expression);
+
+            return new AsyncEnumerable<TResult>(expression);
+        }
 
         /// <summary>
         ///     Execute expression async
@@ -100,6 +146,11 @@ namespace MockAsyncEnumerable.Helpers
         /// <typeparam name="TResult">Type of entity</typeparam>
         /// <remarks></remarks>
         public Task<TResult> ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken)
-            => Task.FromResult(Execute<TResult>(expression));
+        {
+            GuardEnsure.NotNull(expression);
+            cancellationToken.ThrowIfCancellationRequested();
+
+            return Task.FromResult(Execute<TResult>(expression));
+        }
     }
 }

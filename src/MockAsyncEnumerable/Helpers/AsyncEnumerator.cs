@@ -16,6 +16,7 @@
 
 #region U S A G E S
 
+using MockAsyncEnumerable.Helpers.Internal;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -32,7 +33,7 @@ namespace MockAsyncEnumerable.Helpers
         ///     Inner enumerator
         /// </summary>
         private readonly IEnumerator<T> _innerEnumerator;
-        
+
         /// <summary>
         ///     Disposed
         /// </summary>
@@ -47,20 +48,28 @@ namespace MockAsyncEnumerable.Helpers
         /// <param name="innerEnumerator">Inner enumerator</param>
         /// <remarks></remarks>
         public AsyncEnumerator(IEnumerator<T> innerEnumerator)
-            => _innerEnumerator = innerEnumerator;
+        {
+            GuardEnsure.NotNull(innerEnumerator);
+
+            _innerEnumerator = innerEnumerator;
+        }
 
         /// <inheritdoc />
         public async ValueTask<bool> MoveNextAsync()
-            => await Task.FromResult(_innerEnumerator.MoveNext());
-        
+            => await Task.FromResult(_innerEnumerator.MoveNext()).ConfigureAwait(false);
+
         /// <summary>
         ///     Move next value
         /// </summary>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns></returns>
         /// <remarks></remarks>
-        public Task<bool> MoveNext(CancellationToken cancellationToken = new CancellationToken())
-            => Task.FromResult(_innerEnumerator.MoveNext());
+        public Task<bool> MoveNext(CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            return Task.FromResult(_innerEnumerator.MoveNext());
+        }
 
         /// <inheritdoc />
         public async ValueTask DisposeAsync()
@@ -68,10 +77,25 @@ namespace MockAsyncEnumerable.Helpers
             if (_disposed)
                 return;
 
-            Dispose(true);
+            await DisposeAsyncCore().ConfigureAwait(false);
+
+            Dispose(disposing: false);
             _disposed = true;
 
-            await Task.CompletedTask;
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        ///     Dispose asynchronous core.
+        /// </summary>
+        /// <returns>
+        ///     A ValueTask.
+        /// </returns>
+        protected virtual ValueTask DisposeAsyncCore()
+        {
+            _innerEnumerator?.Dispose();
+
+            return default;
         }
 
         /// <inheritdoc />
@@ -80,10 +104,10 @@ namespace MockAsyncEnumerable.Helpers
             if (_disposed)
                 return;
 
-            Dispose(true);
-            GC.SuppressFinalize(this);
-
+            Dispose(disposing: true);
             _disposed = true;
+
+            GC.SuppressFinalize(this);
         }
 
         /// <summary>
@@ -92,10 +116,10 @@ namespace MockAsyncEnumerable.Helpers
         /// </summary>
         /// <param name="disposing">If set to <see langword="true" />, then enumerator will be disposed; otherwise, not.</param>
         /// <remarks></remarks>
-        private void Dispose(bool disposing)
+        protected virtual void Dispose(bool disposing)
         {
-            if (disposing.Equals(true))
-                _innerEnumerator.Dispose();
+            if (disposing)
+                _innerEnumerator?.Dispose();
         }
     }
 }
