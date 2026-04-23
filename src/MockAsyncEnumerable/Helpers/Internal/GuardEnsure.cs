@@ -16,16 +16,15 @@
 
 #region U S A G E S
 
-using MockAsyncEnumerable.Extensions.Internal;
+using RzR.Extensions.EntityMock.Extensions.Internal;
 using System;
-
 #if NET6_0_OR_GREATER
 using System.Runtime.CompilerServices;
 #endif
 
 #endregion
 
-namespace MockAsyncEnumerable.Helpers.Internal
+namespace RzR.Extensions.EntityMock.Helpers.Internal
 {
     /// <summary>
     ///     A guard ensure.

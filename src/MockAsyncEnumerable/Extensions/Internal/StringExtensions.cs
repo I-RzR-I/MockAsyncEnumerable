@@ -14,7 +14,7 @@
 //  </summary>
 // ***********************************************************************
 
-namespace MockAsyncEnumerable.Extensions.Internal
+namespace RzR.Extensions.EntityMock.Extensions.Internal
 {
     /// <summary>
     ///     A string extensions.

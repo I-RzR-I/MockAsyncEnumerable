@@ -16,13 +16,13 @@
 
 #region U S A G E S
 
-using MockAsyncEnumerable.Helpers;
-using MockAsyncEnumerable.Helpers.Internal;
+using RzR.Extensions.EntityMock.Helpers;
+using RzR.Extensions.EntityMock.Helpers.Internal;
 using System.Linq;
 
 #endregion
 
-namespace MockAsyncEnumerable
+namespace RzR.Extensions.EntityMock
 {
     /// <summary>
     ///     Factory methods for creating mock async enumerable

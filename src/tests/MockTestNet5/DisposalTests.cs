@@ -18,8 +18,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MockAsyncEnumerable;
 using MockTestNet5.Models;
+using RzR.Extensions.EntityMock;
 
 namespace MockTestNet5
 {

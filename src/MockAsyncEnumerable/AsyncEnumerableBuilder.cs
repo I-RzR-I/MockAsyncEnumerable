@@ -16,13 +16,13 @@
 
 #region U S A G E S
 
-using MockAsyncEnumerable.Helpers;
-using MockAsyncEnumerable.Helpers.Internal;
+using RzR.Extensions.EntityMock.Helpers;
+using RzR.Extensions.EntityMock.Helpers.Internal;
 using System.Collections.Generic;
 
 #endregion
 
-namespace MockAsyncEnumerable
+namespace RzR.Extensions.EntityMock
 {
     /// <summary>
     ///     Builder class for creating mock async enumerable with a fluent API

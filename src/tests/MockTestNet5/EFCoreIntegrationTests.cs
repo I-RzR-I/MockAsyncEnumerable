@@ -20,8 +20,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using MockAsyncEnumerable;
 using MockTestNet5.Models;
+using RzR.Extensions.EntityMock;
 
 namespace MockTestNet5
 {

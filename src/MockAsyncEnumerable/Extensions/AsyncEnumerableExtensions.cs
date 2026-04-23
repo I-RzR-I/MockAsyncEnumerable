@@ -16,15 +16,15 @@
 
 #region U S A G E S
 
-using MockAsyncEnumerable.Helpers;
-using MockAsyncEnumerable.Helpers.Internal;
+using RzR.Extensions.EntityMock.Helpers;
+using RzR.Extensions.EntityMock.Helpers.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 #endregion
 
-namespace MockAsyncEnumerable.Extensions
+namespace RzR.Extensions.EntityMock.Extensions
 {
     /// <summary>
     ///     Extension methods for creating mock async enumerable

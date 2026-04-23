@@ -16,12 +16,12 @@
 
 #region U S A G E S
 
+using RzR.Extensions.EntityMock.Helpers;
 using System.Collections.Generic;
-using MockAsyncEnumerable.Helpers;
 
 #endregion
 
-namespace MockAsyncEnumerable
+namespace RzR.Extensions.EntityMock
 {
     /// <summary>
     ///     Enumerable invoker
