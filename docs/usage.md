@@ -2,6 +2,10 @@
 
 This doc provides comprehensive examples for using MockAsyncEnumerable in your projects.
 
+> **Root namespace:** `RzR.Extensions.EntityMock` (with sub-namespaces `.Abstractions`, `.Extensions`, `.Faults`, `.Helpers`).
+> All factory / builder / extension methods return `IMockAsyncEnumerable<T>`, which combines
+> `IAsyncEnumerable<T>` and `IQueryable<T>`.
+
 ## Table of Contents
 
 - [Installation](#installation)
@@ -9,8 +13,10 @@ This doc provides comprehensive examples for using MockAsyncEnumerable in your p
 - [Extension Methods](#extension-methods)
 - [Factory Pattern](#factory-pattern)
 - [Builder Pattern](#builder-pattern)
+- [Fault Injection](#fault-injection)
 - [Advanced Scenarios](#advanced-scenarios)
 - [Best Practices](#best-practices)
+- [Migration Guide](#migration-guide)
 
 ---
 
@@ -32,12 +38,13 @@ dotnet add package MockAsyncEnumerable
 
 ## Basic Usage
 
-### Using EnumerableInvoker
+### Using EnumerableInvoker (deprecated)
 
-The simplest way to convert a synchronous collection to async enumerable:
+> !!! `EnumerableInvoker` is marked `[Obsolete]` and will be removed in the next major version.
+> Prefer `AsyncEnumerableFactory`, `ToMockAsyncEnumerable()`, or `AsyncEnumerableBuilder<T>`.
 
 ```csharp
-using MockAsyncEnumerable;
+using RzR.Extensions.EntityMock;
 using Microsoft.EntityFrameworkCore;
 
 var users = new List<User>
@@ -47,7 +54,9 @@ var users = new List<User>
     new User { Id = 3, Name = "Charlie", Age = 35 }
 };
 
+#pragma warning disable CS0618
 var asyncEnumerable = EnumerableInvoker.Invoke(users);
+#pragma warning restore CS0618
 
 // Use with async LINQ operations
 var result = await asyncEnumerable
@@ -64,7 +73,7 @@ var result = await asyncEnumerable
 The approach using extension methods:
 
 ```csharp
-using MockAsyncEnumerable.Extensions;
+using RzR.Extensions.EntityMock.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 var users = new List<User>
@@ -80,7 +89,7 @@ var result = await asyncUsers.FirstOrDefaultAsync(u => u.Name == "Alice");
 ### Convert IQueryable<T> to Async Enumerable
 
 ```csharp
-using MockAsyncEnumerable.Extensions;
+using RzR.Extensions.EntityMock.Extensions;
 
 var query = users.AsQueryable().Where(u => u.IsActive);
 var asyncQuery = query.ToMockAsyncEnumerable();
@@ -91,7 +100,7 @@ var activeUsers = await asyncQuery.ToListAsync();
 ### Convert Arrays to Async Enumerable
 
 ```csharp
-using MockAsyncEnumerable.Extensions;
+using RzR.Extensions.EntityMock.Extensions;
 
 var userArray = new[]
 {
@@ -112,7 +121,7 @@ The factory provides convenient methods for creating async enumerables:
 ### Create Empty Async Enumerable
 
 ```csharp
-using MockAsyncEnumerable;
+using RzR.Extensions.EntityMock;
 
 var empty = AsyncEnumerableFactory.Empty<User>();
 var count = await empty.CountAsync(); // Returns 0
@@ -121,7 +130,7 @@ var count = await empty.CountAsync(); // Returns 0
 ### Create Single Item Async Enumerable
 
 ```csharp
-using MockAsyncEnumerable;
+using RzR.Extensions.EntityMock;
 
 var singleUser = AsyncEnumerableFactory.Single(new User { Id = 1, Name = "Alice" });
 var user = await singleUser.FirstAsync(); // Returns the single user
@@ -130,7 +139,7 @@ var user = await singleUser.FirstAsync(); // Returns the single user
 ### Create from Multiple Items
 
 ```csharp
-using MockAsyncEnumerable;
+using RzR.Extensions.EntityMock;
 
 var users = AsyncEnumerableFactory.Create(
     new User { Id = 1, Name = "Alice" },
@@ -150,7 +159,7 @@ For complex scenarios, use the builder pattern for fluent construction:
 ### Basic Builder Usage
 
 ```csharp
-using MockAsyncEnumerable;
+using RzR.Extensions.EntityMock;
 
 var builder = AsyncEnumerableFactory.Builder<User>();
 
@@ -164,7 +173,7 @@ var result = await users.ToListAsync();
 ### Fluent Builder Chain
 
 ```csharp
-using MockAsyncEnumerable;
+using RzR.Extensions.EntityMock;
 
 var users = AsyncEnumerableFactory.Builder<User>()
     .Add(new User { Id = 1, Name = "Alice" })
@@ -177,7 +186,7 @@ var count = await users.CountAsync();
 ### Builder with AddRange
 
 ```csharp
-using MockAsyncEnumerable;
+using RzR.Extensions.EntityMock;
 
 var initialUsers = new List<User>
 {
@@ -209,10 +218,98 @@ var builder = new AsyncEnumerableBuilder<User>();
 builder.Add(new User { Id = 1, Name = "Alice" });
 var collection1 = builder.Build();
 
-// Clear and build another collection
+// Clear (also resets fault settings) and build another collection
 builder.Clear();
 builder.Add(new User { Id = 2, Name = "Bob" });
 var collection2 = builder.Build();
+```
+
+> Note: `Build()` snapshots the items at call time. Adding more items afterwards
+> does **not** affect previously-built sequences.
+
+---
+
+## Fault Injection
+
+The builder can inject realistic failure modes — useful for testing retry,
+timeout, partial-stream and cancellation behavior in production code without
+changing it.
+
+### Per-item latency
+
+```csharp
+using RzR.Extensions.EntityMock;
+using Microsoft.EntityFrameworkCore;
+
+var slow = AsyncEnumerableFactory.Builder<User>()
+    .AddRange(users)
+    .WithDelay(TimeSpan.FromMilliseconds(50))
+    .Build();
+
+var list = await slow.ToListAsync(); // ~50ms per MoveNextAsync call
+```
+
+### Throw at a specific index
+
+```csharp
+var seq = AsyncEnumerableFactory.Builder<User>()
+    .AddRange(users)
+    .ThrowAfter(3, new DbUpdateException("forced"))
+    .Build();
+
+// Iteration yields the first 3 elements then throws DbUpdateException.
+```
+
+With an index-aware factory:
+
+```csharp
+var seq = AsyncEnumerableFactory.Builder<int>()
+    .AddRange(new[] { 10, 20, 30 })
+    .ThrowAfter(2, idx => new InvalidOperationException($"failed at {idx}"))
+    .Build();
+```
+
+### Time-based cancellation
+
+```csharp
+var seq = AsyncEnumerableFactory.Builder<User>()
+    .AddRange(users)
+    .WithDelay(TimeSpan.FromMilliseconds(20))
+    .CancelAfter(TimeSpan.FromMilliseconds(100))
+    .Build();
+
+try
+{
+    await foreach (var u in seq) { /* ... */ }
+}
+catch (OperationCanceledException)
+{
+    // Internal token expired after 100ms.
+}
+```
+
+The internal `CancelAfter` token is **linked** with any caller-supplied
+cancellation token, so either source aborts iteration:
+
+```csharp
+using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(1));
+
+await foreach (var u in seq.WithCancellation(cts.Token))
+{
+    // Either the caller token (1s) or the builder's CancelAfter wins,
+    // whichever fires first.
+}
+```
+
+### Combining faults
+
+```csharp
+var slow = AsyncEnumerableFactory.Builder<User>()
+    .AddRange(users)
+    .WithDelay(TimeSpan.FromMilliseconds(50)) // latency
+    .ThrowAfter(3, _ => new DbUpdateException("forced")) // failure
+    .CancelAfter(TimeSpan.FromSeconds(1)) // timeout
+    .Build();
 ```
 
 ---
@@ -222,7 +319,7 @@ var collection2 = builder.Build();
 ### Pagination
 
 ```csharp
-using MockAsyncEnumerable.Extensions;
+using RzR.Extensions.EntityMock.Extensions;
 
 var allUsers = GetAllUsers(); // Returns List<User>
 
@@ -240,7 +337,7 @@ var pagedResult = await allUsers
 ### Complex LINQ Queries
 
 ```csharp
-using MockAsyncEnumerable.Extensions;
+using RzR.Extensions.EntityMock.Extensions;
 
 var users = GetUsers();
 
@@ -262,7 +359,7 @@ var result = await users
 ### Grouping Operations
 
 ```csharp
-using MockAsyncEnumerable.Extensions;
+using RzR.Extensions.EntityMock.Extensions;
 
 var users = GetUsers().ToMockAsyncEnumerable();
 
@@ -279,7 +376,7 @@ foreach (var group in groupedByDepartment)
 ### Aggregation
 
 ```csharp
-using MockAsyncEnumerable.Extensions;
+using RzR.Extensions.EntityMock.Extensions;
 
 var orders = GetOrders().ToMockAsyncEnumerable();
 
@@ -295,7 +392,7 @@ var maxOrder = await orders.MaxAsync(o => o.Amount);
 ### Projections
 
 ```csharp
-using MockAsyncEnumerable.Extensions;
+using RzR.Extensions.EntityMock.Extensions;
 
 var users = GetUsers().ToMockAsyncEnumerable();
 
@@ -363,7 +460,7 @@ var dynamic = AsyncEnumerableFactory.Builder<User>()
 ### Query Exceptions
 
 ```csharp
-using MockAsyncEnumerable.Extensions;
+using RzR.Extensions.EntityMock.Extensions;
 
 var users = GetUsers().ToMockAsyncEnumerable();
 
@@ -394,7 +491,7 @@ var asyncEnum = EnumerableInvoker.Invoke(users);
 
 **New Way (v2.0 - Recommended):**
 ```csharp
-using MockAsyncEnumerable.Extensions;
+using RzR.Extensions.EntityMock.Extensions;
 
 var asyncEnum = users.ToMockAsyncEnumerable();
 ```
@@ -403,7 +500,7 @@ var asyncEnum = users.ToMockAsyncEnumerable();
 ```csharp
 // Factory methods
 var empty = AsyncEnumerableFactory.Empty<User>();
-var single = AsyncEnumerableFactory.Single(user);
+var single  AsyncEnumerableFactory.Single(user);
 var multiple = AsyncEnumerableFactory.Create(user1, user2);
 
 // Builder pattern
@@ -411,4 +508,73 @@ var built = AsyncEnumerableFactory.Builder<User>()
     .Add(user1)
     .AddRange(users)
     .Build();
+
+// Fault injection (latency, throw-at-index, time-based cancellation)
+var faulty = AsyncEnumerableFactory.Builder<User>()
+    .AddRange(users)
+    .WithDelay(TimeSpan.FromMilliseconds(50))
+    .ThrowAfter(3, new DbUpdateException("forced"))
+    .CancelAfter(TimeSpan.FromSeconds(1))
+    .Build();
 ```
+
+### Namespace migration (v3.x)
+
+The root namespace was renamed from `MockAsyncEnumerable` to
+`RzR.Extensions.EntityMock`. Update your `using` directives:
+
+| Old | New |
+|-----|-----|
+| `using MockAsyncEnumerable;` | `using RzR.Extensions.EntityMock;` |
+| `using MockAsyncEnumerable.Extensions;` | `using RzR.Extensions.EntityMock.Extensions;` |
+
+Public factory / builder / extension methods now return `IMockAsyncEnumerable<T>`
+(from `RzR.Extensions.EntityMock.Abstractions`) instead of the concrete
+`AsyncEnumerable<T>`. Code that stores the result in `var` is unaffected.
+
+#### If you used the explicit type
+
+If your code declared the variable explicitly as `AsyncEnumerable<T>`, the
+upgrade is a **source-breaking** change and the declaration must be updated.
+Pick whichever option fits your call site:
+
+**1. Switch to the abstraction (recommended)**
+
+```csharp
+// Before (v1.x)
+AsyncEnumerable<User> users = list.ToMockAsyncEnumerable();
+
+// After (v2.x)
+using RzR.Extensions.EntityMock.Abstractions;
+
+IMockAsyncEnumerable<User> users = list.ToMockAsyncEnumerable();
+```
+
+**2. Use one of the standard interfaces**
+
+`IMockAsyncEnumerable<T>` derives from both `IAsyncEnumerable<T>` and
+`IQueryable<T>`, so either works directly without a cast:
+
+```csharp
+IAsyncEnumerable<User> usersAsync = list.ToMockAsyncEnumerable();
+IQueryable<User> usersQuery = list.ToMockAsyncEnumerable();
+```
+
+**3. Cast back to the concrete type (not recommended)**
+
+The concrete `AsyncEnumerable<T>` still lives in
+`RzR.Extensions.EntityMock.Helpers`, so an explicit cast keeps old code
+compiling:
+
+```csharp
+using RzR.Extensions.EntityMock.Helpers;
+
+AsyncEnumerable<User> users = (AsyncEnumerable<User>)list.ToMockAsyncEnumerable();
+```
+
+> !!!️ Casting couples your code to the implementation type and will break again
+> if the internal type ever changes. Prefer option 1 or 2.
+
+**Method signatures, fields, and properties** that exposed `AsyncEnumerable<T>`
+should be updated the same way -> replace the type with `IMockAsyncEnumerable<T>`
+(or one of its base interfaces).

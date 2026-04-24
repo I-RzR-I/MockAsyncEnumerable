@@ -16,15 +16,16 @@
 
 #region U S A G E S
 
-using MockAsyncEnumerable.Helpers;
-using MockAsyncEnumerable.Helpers.Internal;
+using RzR.Extensions.EntityMock.Abstractions;
+using RzR.Extensions.EntityMock.Helpers;
+using RzR.Extensions.EntityMock.Helpers.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 #endregion
 
-namespace MockAsyncEnumerable.Extensions
+namespace RzR.Extensions.EntityMock.Extensions
 {
     /// <summary>
     ///     Extension methods for creating mock async enumerable
@@ -46,7 +47,7 @@ namespace MockAsyncEnumerable.Extensions
         ///         var result = await mockDbSet.ToListAsync();
         ///     </code>
         /// </example>
-        public static AsyncEnumerable<T> ToMockAsyncEnumerable<T>(this IEnumerable<T> source)
+        public static IMockAsyncEnumerable<T> ToMockAsyncEnumerable<T>(this IEnumerable<T> source)
         {
             GuardEnsure.NotNullable(source, nameof(source));
 
@@ -68,7 +69,7 @@ namespace MockAsyncEnumerable.Extensions
         ///         var result = await mockDbSet.ToListAsync();
         ///     </code>
         /// </example>
-        public static AsyncEnumerable<T> ToMockAsyncEnumerable<T>(this IQueryable<T> source)
+        public static IMockAsyncEnumerable<T> ToMockAsyncEnumerable<T>(this IQueryable<T> source)
         {
             GuardEnsure.NotNullable(source, nameof(source));
 
@@ -82,7 +83,7 @@ namespace MockAsyncEnumerable.Extensions
         /// <param name="source">The source array</param>
         /// <returns>A mock async enumerable that can be used for testing EF Core queries</returns>
         /// <exception cref="ArgumentNullException">Thrown when source is null</exception>
-        public static AsyncEnumerable<T> ToMockAsyncEnumerable<T>(this T[] source)
+        public static IMockAsyncEnumerable<T> ToMockAsyncEnumerable<T>(this T[] source)
         {
             GuardEnsure.NotNullable(source, nameof(source));
 

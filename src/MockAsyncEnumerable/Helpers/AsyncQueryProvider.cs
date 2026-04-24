@@ -16,18 +16,14 @@
 
 #region U S A G E S
 
-using MockAsyncEnumerable.Helpers.Internal;
+using Microsoft.EntityFrameworkCore.Query.Internal;
+using RzR.Extensions.EntityMock.Helpers.Internal;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Reflection;
-
-
-#if NETSTANDARD2_0
-using Microsoft.EntityFrameworkCore.Query.Internal;
-#endif
 
 #if NETSTANDARD2_1 || NET || NET5_0 || NET6_0 || NET7_0 || NET8_0|| NET9_0
 using Microsoft.EntityFrameworkCore.Query;
@@ -35,7 +31,7 @@ using Microsoft.EntityFrameworkCore.Query;
 
 #endregion
 
-namespace MockAsyncEnumerable.Helpers
+namespace RzR.Extensions.EntityMock.Helpers
 {
     /// <summary>
     ///     Async enumerator implementation that wraps a synchronous enumerator.

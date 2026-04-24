@@ -16,7 +16,7 @@
 
 #region U S A G E S
 
-using MockAsyncEnumerable.Helpers.Internal;
+using RzR.Extensions.EntityMock.Helpers.Internal;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 
 #endregion
 
-namespace MockAsyncEnumerable.Helpers
+namespace RzR.Extensions.EntityMock.Helpers
 {
     /// <inheritdoc cref="IAsyncEnumerator{T}" />
     internal class AsyncEnumerator<T> : IAsyncEnumerator<T>, IDisposable

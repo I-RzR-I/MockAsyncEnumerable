@@ -21,9 +21,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MockAsyncEnumerable;
 using MockTestNet6.DbData;
 using MockTestNet6.Extensions;
+using RzR.Extensions.EntityMock;
 
 #endregion
 

@@ -18,8 +18,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using MockAsyncEnumerable;
 using MockTestNet5.Models;
+using RzR.Extensions.EntityMock;
 
 namespace MockTestNet5
 {
@@ -117,13 +117,9 @@ namespace MockTestNet5
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Factory_Create_WithNullArray_ThrowsArgumentNullException()
         {
-            // Act
-            var result = AsyncEnumerableFactory.Create<TestEntity>(null);
-
-            // Assert - Exception expected
+            var result = Assert.ThrowsException<ArgumentNullException>(() => AsyncEnumerableFactory.Create<TestEntity>(null));
         }
 
         #endregion

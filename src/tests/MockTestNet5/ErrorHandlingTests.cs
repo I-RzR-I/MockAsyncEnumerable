@@ -19,9 +19,11 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using MockAsyncEnumerable;
-using MockAsyncEnumerable.Helpers;
 using MockTestNet5.Models;
+using RzR.Extensions.EntityMock;
+using RzR.Extensions.EntityMock.Helpers;
+
+#pragma warning disable CS0618
 
 namespace MockTestNet5
 {

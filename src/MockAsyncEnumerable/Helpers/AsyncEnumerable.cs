@@ -16,7 +16,8 @@
 
 #region U S A G E S
 
-using MockAsyncEnumerable.Helpers.Internal;
+using RzR.Extensions.EntityMock.Abstractions;
+using RzR.Extensions.EntityMock.Helpers.Internal;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -24,10 +25,10 @@ using System.Threading;
 
 #endregion
 
-namespace MockAsyncEnumerable.Helpers
+namespace RzR.Extensions.EntityMock.Helpers
 {
     /// <inheritdoc cref="IAsyncEnumerable{T}" />
-    public class AsyncEnumerable<T> : EnumerableQuery<T>, IAsyncEnumerable<T>, IQueryable<T>
+    public class AsyncEnumerable<T> : EnumerableQuery<T>, IMockAsyncEnumerable<T>
     {
         /// <inheritdoc />
         public AsyncEnumerable(IEnumerable<T> enumerable) : base(enumerable)
@@ -38,7 +39,7 @@ namespace MockAsyncEnumerable.Helpers
             => GuardEnsure.NotNull(expression);
 
         /// <inheritdoc />
-        public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = new CancellationToken())
+        public virtual IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
 

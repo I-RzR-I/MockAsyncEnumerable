@@ -21,8 +21,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using MockAsyncEnumerable.Extensions;
-using MockAsyncEnumerable.Helpers;
+using RzR.Extensions.EntityMock.Extensions;
+using RzR.Extensions.EntityMock.Helpers;
 
 namespace MockTestNet5
 {

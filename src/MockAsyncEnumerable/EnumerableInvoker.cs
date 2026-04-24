@@ -16,26 +16,36 @@
 
 #region U S A G E S
 
+using RzR.Extensions.EntityMock.Abstractions;
+using RzR.Extensions.EntityMock.Helpers;
+using System;
 using System.Collections.Generic;
-using MockAsyncEnumerable.Helpers;
 
 #endregion
 
-namespace MockAsyncEnumerable
+namespace RzR.Extensions.EntityMock
 {
     /// <summary>
-    ///     Enumerable invoker
+    ///     Legacy entry point for wrapping an <see cref="IEnumerable{T}" /> as a mock
+    ///     async enumerable.
     /// </summary>
+    /// <remarks>
+    ///     This type is kept for backwards compatibility and will be removed in a future
+    ///     major release. Prefer <see cref="AsyncEnumerableFactory" />, the
+    ///     <c>ToMockAsyncEnumerable()</c> extension methods, or
+    ///     <see cref="AsyncEnumerableBuilder{T}" /> for new code.
+    /// </remarks>
+    [Obsolete("Use AsyncEnumerableFactory.Create / IEnumerable<T>.ToMockAsyncEnumerable() / AsyncEnumerableBuilder<T> instead.", error: false)]
     public static class EnumerableInvoker
     {
         /// <summary>
-        ///     Info async enumerable
+        ///     Wraps the supplied sequence as a mock async enumerable.
         /// </summary>
         /// <param name="enumerable">Records</param>
-        /// <returns></returns>
         /// <typeparam name="T">Entity type</typeparam>
-        /// <remarks></remarks>
-        public static AsyncEnumerable<T> Invoke<T>(IEnumerable<T> enumerable)
+        /// <returns>A mock async enumerable wrapping <paramref name="enumerable" />.</returns>
+        [Obsolete("Use AsyncEnumerableFactory.Create / IEnumerable<T>.ToMockAsyncEnumerable() / AsyncEnumerableBuilder<T> instead.", error: false)]
+        public static IMockAsyncEnumerable<T> Invoke<T>(IEnumerable<T> enumerable)
             => new AsyncEnumerable<T>(enumerable);
     }
 }

@@ -18,8 +18,10 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MockAsyncEnumerable;
 using MockTestNet5.Models;
+using RzR.Extensions.EntityMock;
+
+#pragma warning disable CS0618
 
 namespace MockTestNet5
 {
