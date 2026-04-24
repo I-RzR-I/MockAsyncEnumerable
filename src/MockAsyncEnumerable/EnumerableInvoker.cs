@@ -18,6 +18,7 @@
 
 using RzR.Extensions.EntityMock.Abstractions;
 using RzR.Extensions.EntityMock.Helpers;
+using System;
 using System.Collections.Generic;
 
 #endregion
@@ -34,6 +35,7 @@ namespace RzR.Extensions.EntityMock
     ///     <c>ToMockAsyncEnumerable()</c> extension methods, or
     ///     <see cref="AsyncEnumerableBuilder{T}" /> for new code.
     /// </remarks>
+    [Obsolete("Use AsyncEnumerableFactory.Create / IEnumerable<T>.ToMockAsyncEnumerable() / AsyncEnumerableBuilder<T> instead.", error: false)]
     public static class EnumerableInvoker
     {
         /// <summary>
@@ -42,6 +44,7 @@ namespace RzR.Extensions.EntityMock
         /// <param name="enumerable">Records</param>
         /// <typeparam name="T">Entity type</typeparam>
         /// <returns>A mock async enumerable wrapping <paramref name="enumerable" />.</returns>
+        [Obsolete("Use AsyncEnumerableFactory.Create / IEnumerable<T>.ToMockAsyncEnumerable() / AsyncEnumerableBuilder<T> instead.", error: false)]
         public static IMockAsyncEnumerable<T> Invoke<T>(IEnumerable<T> enumerable)
             => new AsyncEnumerable<T>(enumerable);
     }
