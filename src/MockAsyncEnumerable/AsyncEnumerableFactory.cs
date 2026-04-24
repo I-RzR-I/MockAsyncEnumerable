@@ -25,34 +25,48 @@ using System.Linq;
 
 namespace RzR.Extensions.EntityMock
 {
+    /// -------------------------------------------------------------------------------------------------
     /// <summary>
-    ///     Factory methods for creating mock async enumerable
+    ///     Factory methods for creating mock async enumerable.
     /// </summary>
+    /// =================================================================================================
     public static class AsyncEnumerableFactory
     {
+        /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Creates an empty mock async enumerable
+        ///     Creates an empty mock async enumerable.
         /// </summary>
-        /// <typeparam name="T">The type of elements</typeparam>
-        /// <returns>An empty mock async enumerable</returns>
+        /// <typeparam name="T">The type of elements.</typeparam>
+        /// <returns>
+        ///     An empty mock async enumerable.
+        /// </returns>
+        /// =================================================================================================
         public static IMockAsyncEnumerable<T> Empty<T>()
             => new AsyncEnumerable<T>(Enumerable.Empty<T>());
 
+        /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Creates a mock async enumerable from a single item
+        ///     Creates a mock async enumerable from a single item.
         /// </summary>
-        /// <typeparam name="T">The type of the element</typeparam>
-        /// <param name="item">The single item</param>
-        /// <returns>A mock async enumerable containing the single item</returns>
+        /// <typeparam name="T">The type of the element.</typeparam>
+        /// <param name="item">The single item.</param>
+        /// <returns>
+        ///     A mock async enumerable containing the single item.
+        /// </returns>
+        /// =================================================================================================
         public static IMockAsyncEnumerable<T> Single<T>(T item)
             => new AsyncEnumerable<T>(new[] { item });
 
+        /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Creates a mock async enumerable from multiple items
+        ///     Creates a mock async enumerable from multiple items.
         /// </summary>
-        /// <typeparam name="T">The type of elements</typeparam>
-        /// <param name="items">The items to include</param>
-        /// <returns>A mock async enumerable containing all items</returns>
+        /// <typeparam name="T">The type of elements.</typeparam>
+        /// <param name="items">The items to include.</param>
+        /// <returns>
+        ///     A mock async enumerable containing all items.
+        /// </returns>
+        /// =================================================================================================
         public static IMockAsyncEnumerable<T> Create<T>(params T[] items)
         {
             GuardEnsure.NotNullable(items, nameof(items));
@@ -60,11 +74,15 @@ namespace RzR.Extensions.EntityMock
             return new AsyncEnumerable<T>(items);
         }
 
+        /// -------------------------------------------------------------------------------------------------
         /// <summary>
-        ///     Creates a builder for constructing mock async enumerable fluently
+        ///     Creates a builder for constructing mock async enumerable fluently.
         /// </summary>
-        /// <typeparam name="T">The type of elements</typeparam>
-        /// <returns>A new builder instance</returns>
+        /// <typeparam name="T">The type of elements.</typeparam>
+        /// <returns>
+        ///     A new builder instance.
+        /// </returns>
+        /// =================================================================================================
         public static AsyncEnumerableBuilder<T> Builder<T>() 
             => new AsyncEnumerableBuilder<T>();
     }

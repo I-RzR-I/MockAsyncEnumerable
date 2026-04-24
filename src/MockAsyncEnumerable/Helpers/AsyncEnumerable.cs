@@ -39,7 +39,7 @@ namespace RzR.Extensions.EntityMock.Helpers
             => GuardEnsure.NotNull(expression);
 
         /// <inheritdoc />
-        public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = new CancellationToken())
+        public virtual IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
