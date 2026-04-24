@@ -21,6 +21,8 @@ using Microsoft.EntityFrameworkCore;
 using MockTestNet5.Models;
 using RzR.Extensions.EntityMock;
 
+#pragma warning disable CS0618
+
 namespace MockTestNet5
 {
     [TestClass]

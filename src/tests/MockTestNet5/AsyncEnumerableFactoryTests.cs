@@ -117,13 +117,9 @@ namespace MockTestNet5
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Factory_Create_WithNullArray_ThrowsArgumentNullException()
         {
-            // Act
-            var result = AsyncEnumerableFactory.Create<TestEntity>(null);
-
-            // Assert - Exception expected
+            var result = Assert.ThrowsException<ArgumentNullException>(() => AsyncEnumerableFactory.Create<TestEntity>(null));
         }
 
         #endregion

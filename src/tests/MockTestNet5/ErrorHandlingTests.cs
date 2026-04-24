@@ -23,6 +23,8 @@ using MockTestNet5.Models;
 using RzR.Extensions.EntityMock;
 using RzR.Extensions.EntityMock.Helpers;
 
+#pragma warning disable CS0618
+
 namespace MockTestNet5
 {
     [TestClass]
