@@ -16,6 +16,7 @@
 
 #region U S A G E S
 
+using RzR.Extensions.EntityMock.Abstractions;
 using RzR.Extensions.EntityMock.Helpers.Internal;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +28,7 @@ using System.Threading;
 namespace RzR.Extensions.EntityMock.Helpers
 {
     /// <inheritdoc cref="IAsyncEnumerable{T}" />
-    public class AsyncEnumerable<T> : EnumerableQuery<T>, IAsyncEnumerable<T>, IQueryable<T>
+    public class AsyncEnumerable<T> : EnumerableQuery<T>, IMockAsyncEnumerable<T>
     {
         /// <inheritdoc />
         public AsyncEnumerable(IEnumerable<T> enumerable) : base(enumerable)

@@ -16,6 +16,7 @@
 
 #region U S A G E S
 
+using RzR.Extensions.EntityMock.Abstractions;
 using RzR.Extensions.EntityMock.Helpers;
 using RzR.Extensions.EntityMock.Helpers.Internal;
 using System.Collections.Generic;
@@ -63,7 +64,7 @@ namespace RzR.Extensions.EntityMock
         ///     Builds the mock async enumerable
         /// </summary>
         /// <returns>A mock async enumerable containing all added items</returns>
-        public AsyncEnumerable<T> Build() => new AsyncEnumerable<T>(_items);
+        public IMockAsyncEnumerable<T> Build() => new AsyncEnumerable<T>(_items);
 
         /// <summary>
         ///     Clears this object to its blank/initial state.

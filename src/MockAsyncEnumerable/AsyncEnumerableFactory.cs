@@ -16,6 +16,7 @@
 
 #region U S A G E S
 
+using RzR.Extensions.EntityMock.Abstractions;
 using RzR.Extensions.EntityMock.Helpers;
 using RzR.Extensions.EntityMock.Helpers.Internal;
 using System.Linq;
@@ -34,7 +35,7 @@ namespace RzR.Extensions.EntityMock
         /// </summary>
         /// <typeparam name="T">The type of elements</typeparam>
         /// <returns>An empty mock async enumerable</returns>
-        public static AsyncEnumerable<T> Empty<T>() 
+        public static IMockAsyncEnumerable<T> Empty<T>()
             => new AsyncEnumerable<T>(Enumerable.Empty<T>());
 
         /// <summary>
@@ -43,7 +44,7 @@ namespace RzR.Extensions.EntityMock
         /// <typeparam name="T">The type of the element</typeparam>
         /// <param name="item">The single item</param>
         /// <returns>A mock async enumerable containing the single item</returns>
-        public static AsyncEnumerable<T> Single<T>(T item) 
+        public static IMockAsyncEnumerable<T> Single<T>(T item)
             => new AsyncEnumerable<T>(new[] { item });
 
         /// <summary>
@@ -52,7 +53,7 @@ namespace RzR.Extensions.EntityMock
         /// <typeparam name="T">The type of elements</typeparam>
         /// <param name="items">The items to include</param>
         /// <returns>A mock async enumerable containing all items</returns>
-        public static AsyncEnumerable<T> Create<T>(params T[] items)
+        public static IMockAsyncEnumerable<T> Create<T>(params T[] items)
         {
             GuardEnsure.NotNullable(items, nameof(items));
 
