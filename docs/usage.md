@@ -518,7 +518,7 @@ var faulty = AsyncEnumerableFactory.Builder<User>()
     .Build();
 ```
 
-### Namespace migration (v2.x)
+### Namespace migration (v3.x)
 
 The root namespace was renamed from `MockAsyncEnumerable` to
 `RzR.Extensions.EntityMock`. Update your `using` directives:
