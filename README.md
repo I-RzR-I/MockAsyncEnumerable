@@ -18,8 +18,6 @@ A simple implementation for transforming synchronous collections into async enum
 
 This library was born from the necessity to implement paged grid results in projects where data was provided by stored procedures or in-memory collections, while still needing to support async EF Core APIs like `ToListAsync()`, `FirstOrDefaultAsync()`, etc.
 
-> **Root namespace:** `RzR.Extensions.EntityMock` (with sub-namespaces `.Abstractions`, `.Extensions`, `.Faults`, `.Helpers`).
-
 ## Features
 - Convert `IEnumerable<T>`, `IQueryable<T>`, and arrays to `IAsyncEnumerable<T>` / `IQueryable<T>`;
 - Public APIs return the **`IMockAsyncEnumerable<T>`** abstraction (combines `IAsyncEnumerable<T>` + `IQueryable<T>`);
