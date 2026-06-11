@@ -1,7 +1,18 @@
 > **Note** This repository is developed for .netstandard2.0+
 
+[![NuGet Version](https://img.shields.io/nuget/v/RzR.Extensions.EntityMock.svg?style=flat&logo=nuget)](https://www.nuget.org/packages/RzR.Extensions.EntityMock/)
+[![Nuget Downloads](https://img.shields.io/nuget/dt/RzR.Extensions.EntityMock.svg?style=flat&logo=nuget)](https://www.nuget.org/packages/RzR.Extensions.EntityMock)
+
+<details>
+
+  <summary>Old version</summary>
+  
 [![NuGet Version](https://img.shields.io/nuget/v/MockAsyncEnumerable.svg?style=flat&logo=nuget)](https://www.nuget.org/packages/MockAsyncEnumerable/)
 [![Nuget Downloads](https://img.shields.io/nuget/dt/MockAsyncEnumerable.svg?style=flat&logo=nuget)](https://www.nuget.org/packages/MockAsyncEnumerable)
+
+</details>
+
+<br />
 
 A simple implementation for transforming synchronous collections into async enumerables, enabling seamless testing of EF Core queries, paginated grids, and LINQ operations, or any action or dynamic aggregated query using EF Core (`Microsoft.EntityFrameworkCore`) through Expressions (`System.Linq.Expressions`) with `IAsyncEnumerable<T>`.
 
@@ -24,13 +35,13 @@ This library was born from the necessity to implement paged grid results in proj
 
 ## Installation
 
-**In case you wish to use it in your project, u can install the package from <a href="https://www.nuget.org/packages/MockAsyncEnumerable" target="_blank">nuget.org</a>** or specify what version you want:
+**In case you wish to use it in your project, u can install the package from <a href="https://www.nuget.org/packages/RzR.Extensions.EntityMock" target="_blank">nuget.org</a>** or specify what version you want:
 
-> `Install-Package MockAsyncEnumerable`
+> `Install-Package RzR.Extensions.EntityMock`
 
 Or specify a version:
 
-> `Install-Package MockAsyncEnumerable -Version x.x.x.x`
+> `Install-Package RzR.Extensions.EntityMock -Version x.x.x.x`
 
 ## Examples
 ### Using Extension Methods

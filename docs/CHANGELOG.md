@@ -1,3 +1,7 @@
+### **v4.0.0.8144** [[RzR](mailto:108324929+I-RzR-I@users.noreply.github.com)] 11-06-2026
+* [DEV] - (RzR) -> Publish under new package name.
+* [FIX] - (RzR) -> Fix async cancellation per-iteration and harden async query provider
+
 ### **v3.0.0.3872** [[RzR](mailto:108324929+I-RzR-I@users.noreply.github.com)] 24-04-2026
 **Breaking changes**
 * [DEV] - (RzR) -> **Namespace** - Root renamed `MockAsyncEnumerable` -> `RzR.Extensions.EntityMock` (sub-namespaces: `.Abstractions`, `.Extensions`, `.Faults`, `.Helpers`). Update all `using` directives;
