@@ -43,7 +43,7 @@ namespace RzR.Extensions.EntityMock.Helpers
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            return new AsyncEnumerator<T>(this.AsEnumerable().GetEnumerator());
+            return new AsyncEnumerator<T>(this.AsEnumerable().GetEnumerator(), cancellationToken);
         }
 
         /// <summary>
@@ -60,6 +60,6 @@ namespace RzR.Extensions.EntityMock.Helpers
         /// <returns></returns>
         /// <remarks></remarks>
         public IAsyncEnumerator<T> GetEnumerator()
-            => new AsyncEnumerator<T>(this.AsEnumerable().GetEnumerator());
+            => new AsyncEnumerator<T>(this.AsEnumerable().GetEnumerator(), CancellationToken.None);
     }
 }

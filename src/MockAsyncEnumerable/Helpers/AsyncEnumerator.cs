@@ -35,6 +35,11 @@ namespace RzR.Extensions.EntityMock.Helpers
         private readonly IEnumerator<T> _innerEnumerator;
 
         /// <summary>
+        ///     Cancellation token checked before each element is yielded
+        /// </summary>
+        private readonly CancellationToken _cancellationToken;
+
+        /// <summary>
         ///     Disposed
         /// </summary>
         private bool _disposed;
@@ -46,17 +51,19 @@ namespace RzR.Extensions.EntityMock.Helpers
         ///     Initializes a new instance of the <see cref="AsyncEnumerator{T}" /> class.
         /// </summary>
         /// <param name="innerEnumerator">Inner enumerator</param>
+        /// <param name="cancellationToken">Token observed before each element is yielded; defaults to <see cref="CancellationToken.None" />.</param>
         /// <remarks></remarks>
-        public AsyncEnumerator(IEnumerator<T> innerEnumerator)
+        public AsyncEnumerator(IEnumerator<T> innerEnumerator, CancellationToken cancellationToken = default)
         {
             GuardEnsure.NotNull(innerEnumerator);
 
             _innerEnumerator = innerEnumerator;
+            _cancellationToken = cancellationToken;
         }
 
         /// <inheritdoc />
         public async ValueTask<bool> MoveNextAsync()
-            => await Task.FromResult(_innerEnumerator.MoveNext()).ConfigureAwait(false);
+            => await MoveNext(_cancellationToken).ConfigureAwait(false);
 
         /// <summary>
         ///     Move next value

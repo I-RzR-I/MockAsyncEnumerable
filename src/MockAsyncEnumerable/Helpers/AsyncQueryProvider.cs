@@ -18,6 +18,7 @@
 
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using RzR.Extensions.EntityMock.Helpers.Internal;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -44,6 +45,24 @@ namespace RzR.Extensions.EntityMock.Helpers
     /// <inheritdoc cref="IAsyncQueryProvider" />
     internal class AsyncQueryProvider<TEntity> : IAsyncQueryProvider
     {
+        /// <summary>
+        ///     Cached open generic MethodInfo for <see cref="IQueryProvider.Execute{TResult}(Expression)" />.
+        ///     Resolved once to avoid per-call reflection scanning overhead.
+        /// </summary>
+        /// <remarks></remarks>
+        private static readonly MethodInfo QueryProviderExecuteMethod =
+            typeof(IQueryProvider)
+                .GetMethods()
+                .First(m => m.Name == nameof(IQueryProvider.Execute) && m.IsGenericMethod);
+
+        /// <summary>
+        ///     Cached open generic MethodInfo for <see cref="Task.FromResult{TResult}(TResult)" />.
+        ///     Resolved once to avoid per-call reflection scanning overhead.
+        /// </summary>
+        /// <remarks></remarks>
+        private static readonly MethodInfo TaskFromResultMethod =
+            typeof(Task).GetMethod(nameof(Task.FromResult))!;
+
         /// <summary>
         ///     Current query provider
         /// </summary>
@@ -100,16 +119,20 @@ namespace RzR.Extensions.EntityMock.Helpers
         {
             GuardEnsure.NotNull(expression);
             cancellationToken.ThrowIfCancellationRequested();
+
+            var resultType = typeof(TResult);
+            if (!resultType.IsGenericType || resultType.GetGenericTypeDefinition() != typeof(Task<>))
+                throw new InvalidOperationException(
+                    $"ExecuteAsync only supports Task<T> result types, but was called with '{resultType}'.");
+
             try
             {
-                var expectedResultType = typeof(TResult).GetGenericArguments()[0];
-                var executionResult = typeof(IQueryProvider)
-                    .GetMethods()
-                    .First(method => method.Name == nameof(IQueryProvider.Execute) && method.IsGenericMethod)
+                var expectedResultType = resultType.GetGenericArguments()[0];
+                var executionResult = QueryProviderExecuteMethod
                     .MakeGenericMethod(expectedResultType)
                     .Invoke(this, new object[] { expression });
-                
-                return (TResult)typeof(Task).GetMethod(nameof(Task.FromResult))!
+
+                return (TResult)TaskFromResultMethod
                     .MakeGenericMethod(expectedResultType)
                     .Invoke(null, new[] { executionResult });
             }
