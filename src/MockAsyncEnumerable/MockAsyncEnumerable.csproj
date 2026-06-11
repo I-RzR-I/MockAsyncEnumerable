@@ -25,6 +25,7 @@
 		<PackageIconUrl />
 
 		<RootNamespace>RzR.Extensions.EntityMock</RootNamespace>
+		<AssemblyName>RzR.Extensions.EntityMock</AssemblyName>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -92,9 +93,4 @@
 			<UserProperties BuildVersion_StartDate="2022/4/30" />
 		</VisualStudio>
 	</ProjectExtensions>
-
-	<!-- Disabled on debug -->
-	<!--<Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <Exec Command="PowerShell -NoProfile -ExecutionPolicy unrestricted -file $(SolutionDir)../build/pack.ps1 $(ConfigurationName)" />
-  </Target>-->
 </Project>
